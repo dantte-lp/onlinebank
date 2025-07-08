@@ -4,6 +4,7 @@ import com.bank.onlinebank.dto.ClientDTO;
 import com.bank.onlinebank.enums.Currency;
 import com.bank.onlinebank.enums.Nationality;
 import com.bank.onlinebank.service.ClientService;
+import com.bank.onlinebank.service.DatabaseHealthService;
 import com.bank.onlinebank.service.HealthCheckService;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ public class ClientController {
 
     private final ClientService clientService;
     private final HealthCheckService healthCheckService;
+    private final DatabaseHealthService dbHealthService;
 
     /**
      * Получить список всех клиентов с пагинацией

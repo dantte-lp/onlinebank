@@ -26,16 +26,16 @@ public class ClientDTO {
 
     @NotBlank(message = "Фамилия обязательна для заполнения")
     @Size(min = 2, max = 100, message = "Фамилия должна содержать от 2 до 100 символов")
-    @Pattern(regexp = "^[А-Яа-яЁё\\s-]+$", message = "Фамилия должна содержать только русские буквы")
+    @Pattern(regexp = "^[\\p{L}\\s'-]+$", message = "Фамилия должна содержать только русские буквы")
     private String lastName;
 
     @NotBlank(message = "Имя обязательно для заполнения")
     @Size(min = 2, max = 100, message = "Имя должно содержать от 2 до 100 символов")
-    @Pattern(regexp = "^[А-Яа-яЁё\\s-]+$", message = "Имя должно содержать только русские буквы")
+    @Pattern(regexp = "^[\\p{L}\\s'-]+$", message = "Имя должно содержать только русские буквы")
     private String firstName;
 
     @Size(max = 100, message = "Отчество не должно превышать 100 символов")
-    @Pattern(regexp = "^[А-Яа-яЁё\\s-]*$", message = "Отчество должно содержать только русские буквы")
+    @Pattern(regexp = "^[\\p{L}\\s'-]+$", message = "Отчество должно содержать только русские буквы")
     private String middleName;
 
     // Вычисляемые поля для удобства отображения

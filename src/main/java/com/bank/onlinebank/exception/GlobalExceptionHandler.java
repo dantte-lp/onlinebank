@@ -92,6 +92,14 @@ public class GlobalExceptionHandler {
         }
     }
 
+    @ExceptionHandler(DatabaseUnavailableException.class)
+    public ProblemDetail handleDatabaseUnavailableException(DatabaseUnavailableException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        problemDetail.setTitle("Сервис временно недоступен");
+        problemDetail.setProperty("timestamp", java.time.Instant.now());
+        return problemDetail;
+    }
+
     /**
      * Обработка ошибок валидации
      */

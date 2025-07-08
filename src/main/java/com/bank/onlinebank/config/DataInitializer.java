@@ -93,7 +93,8 @@ public class DataInitializer {
         for (int i = 0; i < clientCount; i++) {
             try {
                 // Генерируем 20-значный номер счета как строку
-                String accountNumber = accountNumberPrefix + i;
+                java.math.BigInteger baseAccountNumber = new java.math.BigInteger("10000000000000000000");
+                String accountNumber = baseAccountNumber.add(java.math.BigInteger.valueOf(i)).toString();
                 Client client = createRandomClient(accountNumber);
                 clients.add(client);
 
