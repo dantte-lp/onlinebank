@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Client Form Fragment -->
+<div th:fragment="clientForm">
+    <div id="validationErrors" class="hidden"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Last Name -->
+        <div>
+            <label for="lastName" class="block text-sm font-medium mb-2">
+                Фамилия <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   id="lastName"
+                   name="lastName"
+                   required
+                   maxlength="100"
+                   pattern="[А-Яа-яЁё\s-]+"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="Иванов">
+        </div>
+
+        <!-- First Name -->
+        <div>
+            <label for="firstName" class="block text-sm font-medium mb-2">
+                Имя <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   id="firstName"
+                   name="firstName"
+                   required
+                   maxlength="100"
+                   pattern="[А-Яа-яЁё\s-]+"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="Иван">
+        </div>
+
+        <!-- Middle Name -->
+        <div>
+            <label for="middleName" class="block text-sm font-medium mb-2">
+                Отчество
+            </label>
+            <input type="text"
+                   id="middleName"
+                   name="middleName"
+                   maxlength="100"
+                   pattern="[А-Яа-яЁё\s-]*"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="Иванович">
+        </div>
+
+        <!-- Birth Date -->
+        <div>
+            <label for="birthDate" class="block text-sm font-medium mb-2">
+                Дата рождения <span class="text-red-500">*</span>
+            </label>
+            <input type="date"
+                   id="birthDate"
+                   name="birthDate"
+                   required
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+
+        <!-- Currency -->
+        <div>
+            <label for="currency" class="block text-sm font-medium mb-2">
+                Валюта счета <span class="text-red-500">*</span>
+            </label>
+            <select id="currency"
+                    name="currency"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Выберите валюту</option>
+                <option value="RUB">₽ Российский рубль (RUB)</option>
+                <option value="USD">$ Доллар США (USD)</option>
+                <option value="EUR">€ Евро (EUR)</option>
+            </select>
+        </div>
+
+        <!-- Nationality -->
+        <div>
+            <label for="nationality" class="block text-sm font-medium mb-2">
+                Гражданство <span class="text-red-500">*</span>
+            </label>
+            <select id="nationality"
+                    name="nationality"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Выберите страну</option>
+                <optgroup label="СНГ">
+                    <option value="RUSSIA">🇷🇺 Россия</option>
+                    <option value="BELARUS">🇧🇾 Беларусь</option>
+                    <option value="KAZAKHSTAN">🇰🇿 Казахстан</option>
+                    <option value="UZBEKISTAN">🇺🇿 Узбекистан</option>
+                    <option value="UKRAINE">🇺🇦 Украина</option>
+                    <option value="ARMENIA">🇦🇲 Армения</option>
+                    <option value="AZERBAIJAN">🇦🇿 Азербайджан</option>
+                    <option value="GEORGIA">🇬🇪 Грузия</option>
+                    <option value="KYRGYZSTAN">🇰🇬 Киргизия</option>
+                    <option value="MOLDOVA">🇲🇩 Молдова</option>
+                    <option value="TAJIKISTAN">🇹🇯 Таджикистан</option>
+                </optgroup>
+                <optgroup label="Европа">
+                    <option value="GERMANY">🇩🇪 Германия</option>
+                    <option value="FRANCE">🇫🇷 Франция</option>
+                    <option value="ITALY">🇮🇹 Италия</option>
+                    <option value="SPAIN">🇪🇸 Испания</option>
+                    <option value="UK">🇬🇧 Великобритания</option>
+                    <option value="POLAND">🇵🇱 Польша</option>
+                    <option value="NETHERLANDS">🇳🇱 Нидерланды</option>
+                    <option value="BELGIUM">🇧🇪 Бельгия</option>
+                    <option value="CZECH">🇨🇿 Чехия</option>
+                    <option value="AUSTRIA">🇦🇹 Австрия</option>
+                    <option value="SWITZERLAND">🇨🇭 Швейцария</option>
+                    <option value="SWEDEN">🇸🇪 Швеция</option>
+                    <option value="NORWAY">🇳🇴 Норвегия</option>
+                    <option value="FINLAND">🇫🇮 Финляндия</option>
+                    <option value="DENMARK">🇩🇰 Дания</option>
+                </optgroup>
+                <optgroup label="Азия">
+                    <option value="CHINA">🇨🇳 Китай</option>
+                    <option value="JAPAN">🇯🇵 Япония</option>
+                    <option value="SOUTH_KOREA">🇰🇷 Южная Корея</option>
+                    <option value="INDIA">🇮🇳 Индия</option>
+                    <option value="TURKEY">🇹🇷 Турция</option>
+                    <option value="ISRAEL">🇮🇱 Израиль</option>
+                    <option value="UAE">🇦🇪 ОАЭ</option>
+                    <option value="SAUDI_ARABIA">🇸🇦 Саудовская Аравия</option>
+                    <option value="SINGAPORE">🇸🇬 Сингапур</option>
+                    <option value="THAILAND">🇹🇭 Таиланд</option>
+                    <option value="VIETNAM">🇻🇳 Вьетнам</option>
+                </optgroup>
+                <optgroup label="Америка">
+                    <option value="USA">🇺🇸 США</option>
+                    <option value="CANADA">🇨🇦 Канада</option>
+                    <option value="MEXICO">🇲🇽 Мексика</option>
+                    <option value="BRAZIL">🇧🇷 Бразилия</option>
+                    <option value="ARGENTINA">🇦🇷 Аргентина</option>
+                </optgroup>
+                <optgroup label="Океания">
+                    <option value="AUSTRALIA">🇦🇺 Австралия</option>
+                    <option value="NEW_ZEALAND">🇳🇿 Новая Зеландия</option>
+                </optgroup>
+                <option value="OTHER">🏳️ Другое</option>
+            </select>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="md:col-span-2">
+            <label for="phoneNumber" class="block text-sm font-medium mb-2">
+                Номер телефона <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <input type="tel"
+                       id="phoneNumber"
+                       name="phoneNumber"
+                       required
+                       pattern="\+[1-9]\d{1,14}"
+                       maxlength="16"
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="+79001234567">
+                <i class="fas fa-phone absolute left-3 top-3 text-gray-400"></i>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Введите номер в международном формате (например: +79001234567)
+            </p>
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button type="button"
+                onclick="closeCreateModal()"
+                class="px-6 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors">
+            Отмена
+        </button>
+        <button type="submit"
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+            <i class="fas fa-save mr-2"></i>Создать клиента
+        </button>
+    </div>
+</div>
+</body>
+</html>

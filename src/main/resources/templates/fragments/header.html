@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Header Fragment -->
+<header th:fragment="header" class="bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
+    <nav class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+            <!-- Logo and Brand -->
+            <div class="flex items-center space-x-4">
+                <a href="/" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-university text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900 dark:text-white">Online Bank</span>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="/clients"
+                   class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                   th:classappend="${#request.requestURI.startsWith('/clients') ? 'text-blue-600 dark:text-blue-400 font-medium' : ''}">
+                    <i class="fas fa-users mr-2"></i>Клиенты
+                </a>
+                <a href="/health"
+                   class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                   th:classappend="${#request.requestURI == '/health' ? 'text-blue-600 dark:text-blue-400 font-medium' : ''}">
+                    <i class="fas fa-heartbeat mr-2"></i>Мониторинг
+                </a>
+            </div>
+
+            <!-- Right side controls -->
+            <div class="flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle"
+                        class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        onclick="toggleTheme()">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                    <i class="fas fa-moon text-blue-400 hidden dark:block"></i>
+                </button>
+
+                <!-- Mobile menu button -->
+                <button class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700"
+                        onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <a href="/clients" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600">
+                <i class="fas fa-users mr-2"></i>Клиенты
+            </a>
+            <a href="/health" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600">
+                <i class="fas fa-heartbeat mr-2"></i>Мониторинг
+            </a>
+        </div>
+    </nav>
+</header>
+</body>
+</html>

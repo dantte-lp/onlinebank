@@ -1,4 +1,15 @@
 package com.bank.onlinebank.exception;
 
-public class DatabaseConnectionException {
+/**
+ * Исключение для случаев недоступности базы данных
+ */
+public class DatabaseConnectionException extends RuntimeException {
+
+    public DatabaseConnectionException(String message) {
+        super(message);
+    }
+
+    public DatabaseConnectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг системы - Online Bank</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Chart.js для графиков -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Мониторинг системы</h1>
+        <p class="text-gray-600 dark:text-gray-400">Состояние компонентов и производительность</p>
+    </div>
+
+    <!-- Overall Status -->
+    <div class="mb-8">
+        <div th:if="${health}"
+             class="p-6 rounded-lg shadow-lg"
+             th:classappend="${health.status == 'UP' ? 'bg-green-100 dark:bg-green-900/20 border-2 border-green-500' :
+                                  health.status == 'DEGRADED' ? 'bg-yellow-100 dark:bg-yellow-900/20 border-2 border-yellow-500' :
+                                  'bg-red-100 dark:bg-red-900/20 border-2 border-red-500'}">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">
+                        <i th:classappend="${health.status == 'UP' ? 'fas fa-check-circle text-green-600' :
+                                               health.status == 'DEGRADED' ? 'fas fa-exclamation-triangle text-yellow-600' :
+                                               'fas fa-times-circle text-red-600'}"></i>
+                        Статус системы: <span th:text="${health.status}">UP</span>
+                    </h2>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        <i class="far fa-clock mr-2"></i>
+                        Время работы: <span th:text="${health.uptime}">0 дней</span>
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Последнее обновление</p>
+                    <p class="font-mono" th:text="${#temporals.format(health.timestamp, 'dd.MM.yyyy HH:mm:ss')}">01.01.2024 00:00:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Status Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- JVM Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fab fa-java text-orange-600 mr-2"></i>
+                JVM Информация
+            </h3>
+            <div th:if="${health?.jvm}" class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-400">Версия Java:</span>
+                    <span class="font-mono text-sm" th:text="${health.jvm.version}">21</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-400">Vendor:</span>
+                    <span class="font-mono text-sm" th:text="${health.jvm.vendor}">Oracle</span>
+                </div>
+
+                <!-- Memory Usage -->
+                <div class="mt-4">
+                    <h4 class="font-medium mb-2">Использование памяти</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Heap Memory</span>
+                                <span th:text="${health.jvm.memory.heapUsed + ' / ' + health.jvm.memory.heapMax}">100MB / 512MB</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                     th:style="'width: ' + ${health.jvm.memory.heapUsedPercentage} + '%'"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                                 th:text="${health.jvm.memory.heapUsedPercentage + '% использовано'}">20% использовано</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CPU Info -->
+                <div class="mt-4">
+                    <h4 class="font-medium mb-2">CPU</h4>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-400">Процессоры:</span>
+                        <span th:text="${health.jvm.cpu.availableProcessors}">8</span>
+                    </div>
+                    <div class="flex justify-between items-center" th:if="${health.jvm.cpu.processCpuLoad >= 0}">
+                        <span class="text-gray-600 dark:text-gray-400">Загрузка процесса:</span>
+                        <span th:text="${#numbers.formatDecimal(health.jvm.cpu.processCpuLoad, 1, 2) + '%'}">10.5%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-database text-blue-600 mr-2"></i>
+                База данных
+            </h3>
+            <div th:if="${health?.database}" class="space-y-3">
+                <div class="flex items-center mb-4">
+                    <div th:if="${health.database.status == 'UP'}"
+                         class="w-4 h-4 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    <div th:unless="${health.database.status == 'UP'}"
+                         class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                    <span class="font-medium"
+                          th:text="${health.database.status == 'UP' ? 'Подключена' : 'Недоступна'}"
+                          th:classappend="${health.database.status == 'UP' ? 'text-green-600' : 'text-red-600'}">
+                            Подключена
+                        </span>
+                </div>
+
+                <div th:if="${health.database.status == 'UP'}">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-400">Версия:</span>
+                        <span class="font-mono text-xs" th:text="${#strings.abbreviate(health.database.version, 30)}">PostgreSQL 17</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-400">Схема:</span>
+                        <span th:text="${health.database.schema}">onlinebank</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-400">Клиентов в БД:</span>
+                        <span class="font-bold" th:text="${health.database.clientCount}">100</span>
+                    </div>
+
+                    <!-- Connection Pool -->
+                    <div th:if="${health.database.connectionPool}" class="mt-4">
+                        <h4 class="font-medium mb-2">Пул соединений</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Активные:</span>
+                                <span th:text="${health.database.connectionPool.activeConnections}">2</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Свободные:</span>
+                                <span th:text="${health.database.connectionPool.idleConnections}">8</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Всего:</span>
+                                <span th:text="${health.database.connectionPool.totalConnections}">10</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">В очереди:</span>
+                                <span th:text="${health.database.connectionPool.threadsAwaitingConnection}">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${health.database.status != 'UP'}" class="text-red-600 dark:text-red-400">
+                    <p th:text="${health.database.error}">База данных недоступна</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Metrics -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8" th:if="${health?.metrics}">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-chart-line text-green-600 mr-2"></i>
+            Метрики API
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="text-center">
+                <p class="text-3xl font-bold text-blue-600" th:text="${health.metrics.totalApiCalls ?: 0}">0</p>
+                <p class="text-gray-600 dark:text-gray-400">Всего запросов</p>
+            </div>
+            <div class="text-center">
+                <p class="text-3xl font-bold text-green-600"
+                   th:text="${health.metrics.averageResponseTime ?: 0} + ' ms'">0 ms</p>
+                <p class="text-gray-600 dark:text-gray-400">Среднее время ответа</p>
+            </div>
+            <div class="text-center">
+                <p class="text-3xl font-bold text-purple-600" th:text="${health.uptime}">0 дней</p>
+                <p class="text-gray-600 dark:text-gray-400">Время работы</p>
+            </div>
+        </div>
+
+        <!-- Endpoint Metrics Table -->
+        <div th:if="${health.metrics.endpointMetrics}" class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-4 py-2 text-left">Endpoint</th>
+                    <th class="px-4 py-2 text-center">Вызовов</th>
+                    <th class="px-4 py-2 text-center">Среднее время</th>
+                    <th class="px-4 py-2 text-center">P50</th>
+                    <th class="px-4 py-2 text-center">P95</th>
+                    <th class="px-4 py-2 text-center">P99</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr th:each="endpoint : ${health.metrics.endpointMetrics}">
+                    <td class="px-4 py-2 font-mono text-xs" th:text="${endpoint.key}">/api/clients</td>
+                    <td class="px-4 py-2 text-center" th:text="${endpoint.value.calls}">100</td>
+                    <td class="px-4 py-2 text-center" th:text="${endpoint.value.averageTime} + ' ms'">50 ms</td>
+                    <td class="px-4 py-2 text-center" th:text="${endpoint.value.p50} + ' ms'">45 ms</td>
+                    <td class="px-4 py-2 text-center" th:text="${endpoint.value.p95} + ' ms'">120 ms</td>
+                    <td class="px-4 py-2 text-center" th:text="${endpoint.value.p99} + ' ms'">200 ms</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Performance Chart -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-tachometer-alt text-orange-600 mr-2"></i>
+            График производительности
+        </h3>
+        <canvas id="performanceChart" width="400" height="150"></canvas>
+    </div>
+
+    <!-- Auto-refresh notice -->
+    <div class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+        <i class="fas fa-sync-alt mr-2"></i>
+        Страница автоматически обновляется каждые 30 секунд
+    </div>
+</main>
+
+<!-- Scripts -->
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/charts.js}"></script>
+<script>
+    // Auto-refresh every 30 seconds
+    setTimeout(function() {
+        location.reload();
+    }, 30000);
+</script>
+</body>
+</html>
